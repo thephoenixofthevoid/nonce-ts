@@ -1,6 +1,6 @@
 {
   "name": "nonce-ts",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A flexible binary nonce generator for use in node and browser with support of subspacing and prefixes.",
   "main": "lib/index.js",
   "repository": "https://github.com/thephoenixofthevoid/nonce-ts.git",
