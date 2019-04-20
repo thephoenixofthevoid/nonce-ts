@@ -13,3 +13,4 @@ while (++i < 100000) {
 }
 
 console.log(f5.sizes())
+console.log(f5.id)

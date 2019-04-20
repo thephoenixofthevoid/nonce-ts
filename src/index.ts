@@ -14,13 +14,14 @@ const ERR_END_REACHED  = "Non cycled counter reached its maximal value";
 
 function noop(){}
 
-assign(Counter, { Sub });
 
 export function Counter (current, prefix: Buffer[] = [], oncycle: Function = $throw(ERR_END_REACHED)) {
     const c = isArray(current) ? [ ...current ] : $zero(current);
     freeze(prefix)
 
-    return assign(next, { sub, prefix, sizes })
+    const id = concat(prefix)
+
+    return assign(next, { sub, prefix, sizes, id })
     
     function next() {
         if ($inc(c)) oncycle();
@@ -38,10 +39,6 @@ export function Counter (current, prefix: Buffer[] = [], oncycle: Function = $th
     }
 }
 
-
-function Sub(n: number = 10, prefix: Buffer[] = [], _oncycle: Function = noop) {
-
-}
 
 /**
  * Implementation
