@@ -11,16 +11,14 @@ const zeros = freeze([ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 // Error messages
 //
 const ERR_END_REACHED  = "Non cycled counter reached its maximal value";
-const ERR_AMBIGUILTIES = "Cannot define sublevels with different sizes due to indexing ambiguities";
 
 function noop(){}
 
-
+assign(Counter, { Sub });
 
 export function Counter (current, prefix: Buffer[] = [], oncycle: Function = $throw(ERR_END_REACHED)) {
     const c = isArray(current) ? [ ...current ] : $zero(current);
     freeze(prefix)
-    var size = null;   
 
     return assign(next, { sub, prefix, sizes })
     
@@ -29,15 +27,20 @@ export function Counter (current, prefix: Buffer[] = [], oncycle: Function = $th
         return concat([ ...prefix, buffer(c) ])
     }
 
-    function sub (n: number = null, _oncycle: Function = noop) {
-        if (n && size && n !== size) throw new Error(ERR_AMBIGUILTIES);
+    function sub (n: number = 10, _oncycle: Function = noop) {
         if ($inc(c)) oncycle();
-        return Counter(size = n || 10, [ ...prefix, buffer(c) ], _oncycle)
+        return Counter(n, [ ...prefix, buffer(c) ], _oncycle)
     }
 
+   
     function sizes() {
       return [ ...prefix.map(x => x.length), c.length ];
     }
+}
+
+
+function Sub(n: number = 10, prefix: Buffer[] = [], _oncycle: Function = noop) {
+
 }
 
 /**
