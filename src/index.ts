@@ -5,14 +5,15 @@ const errEndReached = $throw("Non cycled counter reached its maximal value");
 
 function noop(){}
 
-export function Counter (current, prefix: Buffer[] = [], oncycle: Function = errEndReached) {
+export function Counter(current,prefix: Buffer[] = [], oncycle: Function = errEndReached) {
     const cr = Array.isArray(current) ? [ ...current ] : $zero(current);
     const id = Buffer.concat(prefix)
     const sz = Object.freeze([ ...prefix.map(x => x.length), cr.length ])
+    const ln = sz.reduce((x, y) => x+y)
 
     Object.freeze(prefix)
 
-    return Object.assign(next, { sub, prefix, sizes: sz, id })
+    return Object.assign(next, { sub, prefix, sizes: sz, id, byteLength: ln })
     
     function next() {
         if ($inc(cr)) oncycle();
