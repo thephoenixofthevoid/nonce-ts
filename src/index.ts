@@ -1,41 +1,27 @@
-const isArray = Array.isArray;
-const freeze = Object.freeze;
-const assign = Object.assign;
-const concat = Buffer.concat;
-const buffer = Buffer.from;
-
-const zeros = freeze([ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  		       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ])
-
 //
 // Error messages
 //
-const ERR_END_REACHED  = "Non cycled counter reached its maximal value";
+const errEndReached = $throw("Non cycled counter reached its maximal value");
 
 function noop(){}
 
+export function Counter (current, prefix: Buffer[] = [], oncycle: Function = errEndReached) {
+    const cr = Array.isArray(current) ? [ ...current ] : $zero(current);
+    const id = Buffer.concat(prefix)
+    const sz = Object.freeze([ ...prefix.map(x => x.length), cr.length ])
 
-export function Counter (current, prefix: Buffer[] = [], oncycle: Function = $throw(ERR_END_REACHED)) {
-    const c = isArray(current) ? [ ...current ] : $zero(current);
-    freeze(prefix)
+    Object.freeze(prefix)
 
-    const id = concat(prefix)
-
-    return assign(next, { sub, prefix, sizes, id })
+    return Object.assign(next, { sub, prefix, sizes: sz, id })
     
     function next() {
-        if ($inc(c)) oncycle();
-        return concat([ ...prefix, buffer(c) ])
+        if ($inc(cr)) oncycle();
+        return Buffer.concat([ ...prefix, Buffer.from(cr) ])
     }
 
     function sub (n: number = 10, _oncycle: Function = noop) {
-        if ($inc(c)) oncycle();
-        return Counter(n, [ ...prefix, buffer(c) ], _oncycle)
-    }
-
-   
-    function sizes() {
-      return [ ...prefix.map(x => x.length), c.length ];
+        if ($inc(cr)) oncycle();
+        return Counter(n, [ ...prefix, Buffer.from(cr) ], _oncycle)
     }
 }
 
@@ -60,7 +46,7 @@ function $throw(message) {
 }
 
 function $zero(n) {
-    const c = zeros.slice(0, n);
+    const c = [];
     while (c.length < n) c.push(0);
     return c;
 }
